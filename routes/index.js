@@ -27,12 +27,66 @@ app.get('/add', (req,res) =>{
     //http://localhost:3000/add?amount=33&dist=22
     var amount = req.query.amount;
     var dist = req.query.dist;
-      
-    var newdata = new db_access.daily({sno:sno, amount: amount});
-                  db_access.daily.create(newdata, function(err, newmark) {
+    
+  MongoClient.connect(url, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("waterutil");
+    
+    
+   dbo.collection("ram_dailies").countDocuments({}, function(err, numOfDocs) {
+      if(numOfDocs==5)
+        {
+          var myquery = {};
+          dbo.collection("ram_dailies").deleteMany(myquery, function(err, obj) {
+          if (err) throw err;
+            console.log(obj.result.n + " document(s) deleted");
+          });
+          
+          var sno = 1;
+          var newdata = new db_access.daily({sno:sno, amount: amount});
+                  db_access.daily.create(newdata, function(err, newdata) {
                   if(err) return next(err);                           
                   });
+        }
+       else
+         {
+            var sno = numOfDocs+1;
+            var newdata = new db_access.daily({sno:sno, amount: amount});
+                    db_access.daily.create(newdata, function(err, newdata) {
+                    if(err) return next(err);                           
+                    });
+         }
+    });
+    
+  
+  
+                   
+        
+        dbo.collection("water_level").update({sno:1},{$set:{dist:dist}}), function(err, res) {
+        if (err) throw err;          
+        } 
+  });
+  
+  //res.send("sucess :)");
 });
+
+
+
+app.post('/app-waterlevel', (req,res) =>{   
+  MongoClient.connect(url, function(err, db) {
+          if (err) throw err;
+          var dbo = db.db("waterutil");                 
+          dbo.collection("water_level").find({}).toArray(function(err, result) {
+              if (err) throw err;
+              res.render('app/water_level',{
+                  level:result
+              });
+
+              db.close();
+              });
+  });    
+});
+
 
 
 app.get('/', (req,res) =>{   
@@ -125,7 +179,7 @@ app.get('/daily-usage',(req,res) =>{
         MongoClient.connect(url, function(err, db) {
           if (err) throw err;
           var dbo = db.db("waterutil");
-          dbo.collection("ram_daily").find({}).toArray(function(err, result) {
+          dbo.collection("ram_dailies").find({}).toArray(function(err, result) {
             if (err) throw err;
             res.render('daily-usage',{
                 title:"Daily usage",
@@ -142,7 +196,7 @@ app.get('/monthly-usage',(req,res) =>{
         MongoClient.connect(url, function(err, db) {
           if (err) throw err;
           var dbo = db.db("waterutil");
-          dbo.collection("ram_monthly").find({}).toArray(function(err, result) {
+          dbo.collection("ram_monthlies").find({}).toArray(function(err, result) {
             if (err) throw err;
             res.render('monthly-usage',{
                 title:"Monthly-usage",
@@ -194,7 +248,7 @@ app.get('/bill',(req,res) =>{
         MongoClient.connect(url, function(err, db) {
           if (err) throw err;
           var dbo = db.db("waterutil");
-          dbo.collection("ram_monthly").find({}).toArray(function(err, result) {
+          dbo.collection("ram_monthlies").find({}).toArray(function(err, result) {
             if (err) throw err;
             res.render('bill',{
                 title:"Bill",

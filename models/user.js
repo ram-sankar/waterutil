@@ -23,7 +23,38 @@ var User =  mongoose.model('customers', UserSchema); //mongoose.model('table nam
 
 
 
+
+var dailydata = mongoose.Schema({
+	sno: {
+		type: Number,
+		index:true
+	},
+    amount: {
+      type: Number
+    }
+});
+var daily =  mongoose.model('ram_dailies', dailydata);
+
+
+
+var waterlevel = mongoose.Schema({
+	sno: {
+		type: Number,
+		index:true
+	},
+    dist: {
+      type: Number
+    }
+});
+var water =  mongoose.model('water_level', waterlevel);
+
+
+
+
+
 module.exports = {
-    User : User
+    User : User,
+    daily : daily,
+    water : water
 }
 
