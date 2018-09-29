@@ -34,19 +34,20 @@ app.get('/add', (req,res) =>{
     
     
    dbo.collection("ram_dailies").countDocuments({}, function(err, numOfDocs) {
-      if(numOfDocs==5)
+      if(numOfDocs==24)
         {
           var myquery = {};
           dbo.collection("ram_dailies").deleteMany(myquery, function(err, obj) {
           if (err) throw err;
             console.log(obj.result.n + " document(s) deleted");
-          });
-          
-          var sno = 1;
-          var newdata = new db_access.daily({sno:sno, amount: amount});
+           
+            var sno = 1;
+            var newdata = new db_access.daily({sno:sno, amount: amount});
                   db_access.daily.create(newdata, function(err, newdata) {
                   if(err) return next(err);                           
                   });
+          });          
+          
         }
        else
          {
@@ -67,7 +68,7 @@ app.get('/add', (req,res) =>{
         } 
   });
   
-  //res.send("sucess :)");
+  res.send("sucess :)");
 });
 
 
@@ -80,6 +81,23 @@ app.post('/app-waterlevel', (req,res) =>{
               if (err) throw err;
               res.render('app/water_level',{
                   level:result
+              });
+
+              db.close();
+              });
+  });    
+});
+
+
+
+app.post('/app-daily', (req,res) =>{   
+  MongoClient.connect(url, function(err, db) {
+          if (err) throw err;
+          var dbo = db.db("waterutil");                 
+          dbo.collection("ram_dailies").find({}).toArray(function(err, result) {
+              if (err) throw err;
+              res.render('app/daily',{
+                  amount:result
               });
 
               db.close();
