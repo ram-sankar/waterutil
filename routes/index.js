@@ -98,7 +98,8 @@ app.post('/register',(req,res,next) =>{
 	var phone = req.body.phone;
 	var password = req.body.password;
 	var password2 = req.body.c_password;
-	req.checkBody('c_password', 'Passwords do not match').equals(req.body.password);       
+	req.checkBody('c_password', 'Passwords do not match').equals(req.body.password);  
+    var amount = 0;
     var errors = req.validationErrors();
     
     if(errors)
@@ -108,8 +109,8 @@ app.post('/register',(req,res,next) =>{
     else
     {       
                 
-        var newUser = new db_access.User({phone:phone, email: email, username:username,password:password});
-                  db_access.User.create(newUser, function(err, newmark) {
+        var newUser = new db_access.User({phone:phone, email: email, username:username,password:password,amount:amount});
+                  db_access.User.create(newUser, function(err, newUser) {
                   if(err) return next(err);                           
                   });
         
