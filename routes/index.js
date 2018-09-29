@@ -139,7 +139,7 @@ app.post('/app-daily', (req,res) =>{
 
 
 
-app.get('/app-monthly', (req,res) =>{   
+app.ppst('/app-monthly', (req,res) =>{   
   MongoClient.connect(url, function(err, db) {
           if (err) throw err;
           var dbo = db.db("waterutil");                 
