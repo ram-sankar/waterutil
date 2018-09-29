@@ -1,0 +1,101 @@
+<%- include('header_file/top.ejs')%>
+
+<head>
+    <style>
+        body {
+          padding-bottom:13%;
+        }
+
+        svg.radial-progress {
+          height: auto;
+          max-width: 200px;
+          padding: 1em;
+          transform: rotate(-90deg);
+          width: 100%;
+        }
+
+        svg.radial-progress circle {
+          fill: rgba(0,0,0,0);
+          stroke: #fff;
+          stroke-dashoffset: 219.91148575129; /* Circumference */
+          stroke-width: 10;
+        }
+
+        svg.radial-progress circle.incomplete { opacity: 0.25; }
+        svg.radial-progress circle.complete { stroke-dasharray: 219.91148575129; /* Circumference */ }
+        svg.radial-progress text {
+          fill: #fff;
+          font: 400 1em/1 'Oswald', sans-serif;
+          text-anchor: middle;
+        }
+        svg.radial-progress:nth-of-type(6n+1) circle { stroke: #83e4e2; }
+
+    </style>  
+</head>
+
+<body>
+
+    
+    <br><br><br><br><br>
+    <center><span class="yellow"><h1>Water level left in tank</h1></span></center><br>
+    <br><br>
+    
+    <center>
+    <svg class="radial-progress" data-percentage="<%=products[0].amount%>" viewBox="0 0 80 80">
+    <circle class="incomplete" cx="40" cy="40" r="35"></circle>
+    <circle class="complete" cx="40" cy="40" r="35" style="stroke-dashoffset: 39.58406743523136;"></circle>
+    <text class="percentage" x="50%" y="57%" transform="matrix(0, 1, -1, 0, 80, 0)"><%=products[0].amount%></text>
+    </svg></center>
+
+</body>
+
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script> 
+<script>
+$(function(){
+    $('svg.radial-progress').each(function( index, value ) { 
+        $(this).find($('circle.complete')).removeAttr( 'style' );
+    });
+
+    // Activate progress animation on scroll
+    $(window).scroll(function(){
+        $('svg.radial-progress').each(function( index, value ) { 
+            // If svg.radial-progress is approximately 25% vertically into the window when scrolling from the top or the bottom
+            if ( 
+                $(window).scrollTop() > $(this).offset().top - ($(window).height() * 0.75) &&
+                $(window).scrollTop() < $(this).offset().top + $(this).height() - ($(window).height() * 0.25)
+            ) {
+                // Get percentage of progress
+                percent = $(value).data('percentage');
+                // Get radius of the svg's circle.complete
+                radius = $(this).find($('circle.complete')).attr('r');
+                // Get circumference (2πr)
+                circumference = 2 * Math.PI * radius;
+                // Get stroke-dashoffset value based on the percentage of the circumference
+                strokeDashOffset = circumference - ((percent * circumference) / 100);
+                // Transition progress for 1.25 seconds
+                $(this).find($('circle.complete')).animate({'stroke-dashoffset': strokeDashOffset}, 1250);
+            }
+        });
+    }).trigger('scroll');
+
+});
+</script>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-36251023-1']);
+  _gaq.push(['_setDomainName', 'jqueryscript.net']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>

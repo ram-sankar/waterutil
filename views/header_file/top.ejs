@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="/css/style-navbar.css" />
+    <title><%= title %></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+</head>
+<body>
+    
+    
+<!--
+<% //if(!req.session.user){ %>
+<% //res.redirect('/');  %>
+<% //}%>
+-->
+   <nav class="navbar navbar-fixed-top" id="navibar">
+  <div class="container-fluid">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#mainNavBar">
+        <span class="icon-bar tog-bar"></span>
+        <span class="icon-bar tog-bar"></span>
+        <span class="icon-bar tog-bar"></span>
+    </button>
+      <a class="navbar-brand" href="#">Water Util</a>
+    </div>
+    
+    <div class="collapse navbar-collapse" id="mainNavBar">
+    <ul class="nav navbar-nav " id="tabs">
+      <li><a href="/daily-usage">Today's Usage</a></li>
+      <li><a href="/monthly-usage">Monthly usage</a></li>
+      <li><a href="/total-cons">Flat's total consumption</a></li>
+      <li><a href="/water-level">Water left in tank</a></li>
+      <li><a href="/bill">Your Bill</a></li>
+    </ul>
+      <div id="user" >
+            <div class="dropdown navbar-right">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" id="droplist1">Hi 
+                <%// if (req.session.user) {%>
+                    <%//= req.session.user.username %>
+                <% //}%>
+            <span class="caret"></span></button>
+            <ul class="dropdown-menu" >
+            <li><a href="/logout">logout</a></li>    
+            </ul>
+            </div>
+            </div>
+      </div></div>
+</nav>
+    

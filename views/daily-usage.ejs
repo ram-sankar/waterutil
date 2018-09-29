@@ -1,0 +1,31 @@
+<%- include('header_file/top.ejs')%>
+<link rel="stylesheet" href="/css/table.css" />
+
+<div class="bg">
+<div style="padding-top: 80px; width: 100%;">
+        <center><h1><div class="yellow">Today's Water Usage</div></h1></center>        
+</div>
+
+<table class="container">
+    <thead>
+        <tr>
+            <th><h1>S.No</h1></th>
+            <th><h1>Time(H)</h1></th>
+            <th><h1>Amount (L)</h1></th>
+        </tr>
+    </thead>
+    
+
+    
+    <tbody>
+        
+         <%for (var result in products){%>        
+            <tr>
+                <td> <center>&nbsp; <%=products[result].sno%> &nbsp; </center></td> 
+                <td> <center>&nbsp; <%=products[result].time%> &nbsp; </center></td>
+                <td> <center>&nbsp; <%=products[result].amount%> &nbsp; </center></td>
+            </tr>
+        <%}%>
+    </tbody>
+</table>
+</div>
