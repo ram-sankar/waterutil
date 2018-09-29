@@ -72,7 +72,7 @@ app.get('/add', (req,res) =>{
 
 
 
-app.get('/app-waterlevel', (req,res) =>{   
+app.post('/app-waterlevel', (req,res) =>{   
   MongoClient.connect(url, function(err, db) {
           if (err) throw err;
           var dbo = db.db("waterutil");                 
