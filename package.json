@@ -22,6 +22,7 @@
     "express-validator": "*",
     "mongodb": "*",
     "mongoose": "*",
-    "nodemon": "^1.18.0"
+    "nodemon": "^1.18.0",
+    "twilio": "^3.21.0"
   }
 }

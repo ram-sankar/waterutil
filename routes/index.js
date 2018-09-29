@@ -61,7 +61,7 @@ app.get('/add', (req,res) =>{
                          }
                         else
                         {
-                            
+                            numOfDocs+=1;
                             var date = numOfDocs+"-9-2018";
                             var newdata = new db_access.monthly({date:date, amount: total_amount});
                             db_access.monthly.create(newdata, function(err, newdata) {
@@ -103,6 +103,25 @@ app.get('/add', (req,res) =>{
   res.send("sucess :)");
 });
 
+
+app.get('/mess',(req,res)=> {
+
+       
+const accountSid = 'AC994fa7f1acfbc8e5bcbcd196b80e9ea8';
+const authToken = '6cefef96787f4e439522823183e03f3b';
+const client1 = require('twilio')(accountSid, authToken);
+
+client1.messages
+  .create({
+     body: 'ALERT! Water level is BELOW 20%',
+     from: '+18508803927',
+     to: '+919025725112'
+   })
+  .then(message => console.log(message.sid))
+  .done();
+  
+  
+});
 
 
 app.post('/app-waterlevel', (req,res) =>{   
