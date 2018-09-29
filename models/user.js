@@ -37,6 +37,19 @@ var daily =  mongoose.model('ram_dailies', dailydata);
 
 
 
+var monthlydata = mongoose.Schema({
+	date: {
+		type: String,
+		index:true
+	},
+    amount: {
+      type: Number
+    }
+});
+var monthly =  mongoose.model('ram_monthlies', monthlydata);
+
+
+
 var waterlevel = mongoose.Schema({
 	sno: {
 		type: Number,
@@ -55,6 +68,7 @@ var water =  mongoose.model('water_level', waterlevel);
 module.exports = {
     User : User,
     daily : daily,
-    water : water
+    water : water,
+    monthly : monthly
 }
 

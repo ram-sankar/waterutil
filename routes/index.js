@@ -29,43 +29,75 @@ app.get('/add', (req,res) =>{
     var dist = req.query.dist;
     
   MongoClient.connect(url, function(err, db) {
-        if (err) throw err;
-        var dbo = db.db("waterutil");
-    
-    
-   dbo.collection("ram_dailies").countDocuments({}, function(err, numOfDocs) {
-      if(numOfDocs==24)
-        {
-          var myquery = {};
-          dbo.collection("ram_dailies").deleteMany(myquery, function(err, obj) {
-          if (err) throw err;
-            console.log(obj.result.n + " document(s) deleted");
-           
-            var sno = 1;
-            var newdata = new db_access.daily({sno:sno, amount: amount});
-                  db_access.daily.create(newdata, function(err, newdata) {
-                  if(err) return next(err);                           
+      if (err) throw err;
+      var dbo = db.db("waterutil");
+
+
+      dbo.collection("ram_dailies").countDocuments({}, function(err, numOfDocs) {
+          if(numOfDocs==24)
+            {
+              
+                  //get the sum of amount => insert new row to monthly table
+                  dbo.collection("ram_dailies").aggregate(
+                    { $group: { _id : null, sum : { $sum: "$amount" } } },{$project:{_id:0,sum:1}}
+                  ).toArray(function(err, result)
+                  {
+                        var total_amount = result[0].sum;
+                        dbo.collection("ram_monthlies").countDocuments({}, function(err, numOfDocs) {
+                    
+                        if(numOfDocs==31)
+                        {
+                            var myquery = {};
+                            dbo.collection("ram_monthlies").deleteMany(myquery, function(err, obj) {
+                                if (err) throw err;
+                                console.log(obj.result.n + " document(s) deleted");
+
+                                var date = "31-8-2018";
+                                var newmondata = new db_access.monthly({date:date, amount: total_amount});
+                                db_access.monthly.create(newmondata, function(err, newmondata) {
+                                    if(err) return next(err);                           
+                                });
+                            });
+                         }
+                        else
+                        {
+                            
+                            var date = numOfDocs+"-9-2018";
+                            var newdata = new db_access.monthly({date:date, amount: total_amount});
+                            db_access.monthly.create(newdata, function(err, newdata) {
+                                if(err) return next(err);                           
+                            });
+                        }
                   });
-          });          
-          
-        }
-       else
-         {
-            var sno = numOfDocs+1;
-            var newdata = new db_access.daily({sno:sno, amount: amount});
-                    db_access.daily.create(newdata, function(err, newdata) {
+
+                  var myquery = {};
+                  dbo.collection("ram_dailies").deleteMany(myquery, function(err, obj) {
+                        if (err) throw err;
+                        console.log(obj.result.n + " document(s) deleted");
+
+                        var sno = 1;
+                        var newdata = new db_access.daily({sno:sno, amount: amount});
+                        db_access.daily.create(newdata, function(err, newdata) {
+                            if(err) return next(err);                           
+                        });
+                  });  
+              });
+            }
+           else
+            {
+                var sno = numOfDocs+1;
+                var newdata = new db_access.daily({sno:sno, amount: amount});
+                db_access.daily.create(newdata, function(err, newdata) {
                     if(err) return next(err);                           
-                    });
-         }
-    });
+                });
+             }
+     
+      });
     
-  
-  
-                   
-        
-        dbo.collection("water_level").update({sno:1},{$set:{dist:dist}}), function(err, res) {
-        if (err) throw err;          
-        } 
+    
+      dbo.collection("water_level").update({sno:1},{$set:{dist:dist}}), function(err, res) {
+          if (err) throw err;          
+      } 
   });
   
   res.send("sucess :)");
@@ -97,6 +129,23 @@ app.post('/app-daily', (req,res) =>{
           dbo.collection("ram_dailies").find({}).toArray(function(err, result) {
               if (err) throw err;
               res.render('app/daily',{
+                  amount:result
+              });
+
+              db.close();
+              });
+  });    
+});
+
+
+
+app.post('/app-monthly', (req,res) =>{   
+  MongoClient.connect(url, function(err, db) {
+          if (err) throw err;
+          var dbo = db.db("waterutil");                 
+          dbo.collection("ram_monthlies").find({}).toArray(function(err, result) {
+              if (err) throw err;
+              res.render('app/monthly',{
                   amount:result
               });
 
